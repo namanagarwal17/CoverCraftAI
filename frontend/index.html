@@ -1,0 +1,298 @@
+<!DOCTYPE html>
+<html lang="en">
+<head>
+  <meta charset="UTF-8">
+  <meta name="viewport" content="width=device-width, initial-scale=1.0">
+  <title>CoverCraft AI - Professional Cover Letter Generator</title>
+  <meta name="description" content="Generate tailored, high-converting cover letters in seconds with Google Gemini AI and smart template fallback.">
+  <link rel="preconnect" href="https://fonts.googleapis.com">
+  <link rel="preconnect" href="https://fonts.gstatic.com" crossorigin>
+  <link href="https://fonts.googleapis.com/css2?family=Inter:ital,opsz,wght@0,14..32,300..900;1,14..32,300..900&family=JetBrains+Mono:wght@400;500&display=swap" rel="stylesheet">
+  <link rel="stylesheet" href="style.css">
+</head>
+<body>
+  <!-- Background Glow Accents -->
+  <div class="bg-blur-circle bg-glow-1"></div>
+  <div class="bg-blur-circle bg-glow-2"></div>
+
+  <div class="app-container">
+    <!-- Header -->
+    <header class="app-header">
+      <div class="brand">
+        <div class="brand-icon">
+          <svg width="24" height="24" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2" stroke-linecap="round" stroke-linejoin="round">
+            <path d="M14.5 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V7.5L14.5 2z"/>
+            <polyline points="14 2 14 8 20 8"/>
+            <path d="m9.5 12.5 1.5 1.5 3.5-3.5"/>
+          </svg>
+        </div>
+        <div class="brand-info">
+          <h1>CoverCraft <span class="badge-accent">AI</span></h1>
+          <p class="tagline">Next-Gen SaaS Cover Letter Generator</p>
+        </div>
+      </div>
+
+      <div class="header-actions">
+        <div id="connectionStatus" class="status-pill status-checking">
+          <span class="status-dot"></span>
+          <span id="connectionStatusText">Connecting...</span>
+        </div>
+        <button type="button" id="fillDemoBtn" class="btn-ghost" title="Quickly fill with sample data for testing">
+          <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+            <path d="M21 16V8a2 2 0 0 0-1-1.73l-7-4a2 2 0 0 0-2 0l-7 4A2 2 0 0 0 3 8v8a2 2 0 0 0 1 1.73l7 4a2 2 0 0 0 2 0l7-4A2 2 0 0 0 21 16z"/>
+            <polyline points="3.27 6.96 12 12.01 20.73 6.96"/>
+            <line x1="12" y1="22.08" x2="12" y2="12"/>
+          </svg>
+          Demo Data
+        </button>
+      </div>
+    </header>
+
+    <!-- Notification / Alert Banner -->
+    <div id="alertBanner" class="alert-banner hidden" role="alert">
+      <div class="alert-icon" id="alertIcon"></div>
+      <div class="alert-content" id="alertMessage"></div>
+      <button type="button" class="alert-close" id="alertCloseBtn" aria-label="Close notification">&times;</button>
+    </div>
+
+    <!-- Main Workspace Grid -->
+    <main class="main-grid">
+      <!-- Left Panel: Input Form -->
+      <section class="card panel-form" aria-labelledby="form-heading">
+        <div class="card-header">
+          <div>
+            <h2 id="form-heading">Candidate Details</h2>
+            <p class="section-desc">Provide your target role and skills to craft a personalized letter.</p>
+          </div>
+          <button type="button" id="clearFormBtn" class="btn-text-action" title="Clear all fields">Reset</button>
+        </div>
+
+        <form id="coverLetterForm" novalidate>
+          <!-- Candidate Name -->
+          <div class="form-group">
+            <label for="candidateName">
+              <span>Candidate Name</span>
+              <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M20 21v-2a4 4 0 0 0-4-4H8a4 4 0 0 0-4 4v2"/>
+                <circle cx="12" cy="7" r="4"/>
+              </svg>
+              <input 
+                type="text" 
+                id="candidateName" 
+                name="candidateName" 
+                placeholder="e.g. Alex Morgan" 
+                required 
+                autocomplete="name"
+              >
+            </div>
+            <span class="field-error" id="candidateNameError"></span>
+          </div>
+
+          <!-- Job Role -->
+          <div class="form-group">
+            <label for="jobRole">
+              <span>Target Job Role</span>
+              <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="2" y="7" width="20" height="14" rx="2" ry="2"/>
+                <path d="M16 21V5a2 2 0 0 0-2-2h-4a2 2 0 0 0-2 2v16"/>
+              </svg>
+              <input 
+                type="text" 
+                id="jobRole" 
+                name="jobRole" 
+                placeholder="e.g. Senior Full Stack Engineer" 
+                required
+              >
+            </div>
+            <span class="field-error" id="jobRoleError"></span>
+          </div>
+
+          <!-- Target Company -->
+          <div class="form-group">
+            <label for="targetCompany">
+              <span>Target Company</span>
+              <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper">
+              <svg class="input-icon" width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M3 21h18"/>
+                <path d="M5 21V7l8-4v18"/>
+                <path d="M19 21V11l-6-4"/>
+                <path d="M9 9h1"/>
+                <path d="M9 13h1"/>
+                <path d="M9 17h1"/>
+              </svg>
+              <input 
+                type="text" 
+                id="targetCompany" 
+                name="targetCompany" 
+                placeholder="e.g. Stripe, Google, Acme Corp" 
+                required
+              >
+            </div>
+            <span class="field-error" id="targetCompanyError"></span>
+          </div>
+
+          <!-- Key Skills -->
+          <div class="form-group">
+            <label for="keySkills">
+              <span>Key Skills & Strengths</span>
+              <span class="required-star">*</span>
+            </label>
+            <div class="input-wrapper textarea-wrapper">
+              <textarea 
+                id="keySkills" 
+                name="keySkills" 
+                rows="3" 
+                placeholder="e.g. React, Node.js, Cloud Architecture, REST APIs, Agile Leadership, Performance Optimization" 
+                required
+              ></textarea>
+            </div>
+            <span class="field-hint">Separate with commas or bullets for best results.</span>
+            <span class="field-error" id="keySkillsError"></span>
+          </div>
+
+          <!-- Tone Selection -->
+          <div class="form-group">
+            <label for="toneSelect">
+              <span>Letter Tone / Style</span>
+            </label>
+            <div class="select-wrapper">
+              <select id="toneSelect" name="tone">
+                <option value="professional" selected>Professional & Polished (Standard)</option>
+                <option value="confident">Confident & High-Impact</option>
+                <option value="enthusiastic">Enthusiastic & Passionate</option>
+                <option value="creative">Creative & Visionary</option>
+              </select>
+            </div>
+          </div>
+
+          <!-- Generation Mode Selector -->
+          <div class="generation-mode-box">
+            <span class="mode-label">Engine Mode:</span>
+            <div class="mode-options">
+              <label class="mode-radio">
+                <input type="radio" name="engineMode" value="auto" checked>
+                <span class="radio-custom"></span>
+                <span>Gemini AI (with auto-fallback)</span>
+              </label>
+              <label class="mode-radio">
+                <input type="radio" name="engineMode" value="template">
+                <span class="radio-custom"></span>
+                <span>Template Fallback Only</span>
+              </label>
+            </div>
+          </div>
+
+          <!-- Submit Buttons -->
+          <div class="form-actions">
+            <button type="submit" id="generateBtn" class="btn-primary">
+              <span class="btn-icon">
+                <svg width="18" height="18" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                  <path d="m12 3-1.9 5.8a2 2 0 0 1-1.3 1.3L3 12l5.8 1.9a2 2 0 0 1 1.3 1.3L12 21l1.9-5.8a2 2 0 0 1 1.3-1.3L21 12l-5.8-1.9a2 2 0 0 1-1.3-1.3L12 3z"/>
+                </svg>
+              </span>
+              <span class="btn-text">Generate Cover Letter</span>
+              <span class="btn-loader hidden" aria-hidden="true"></span>
+            </button>
+          </div>
+        </form>
+      </section>
+
+      <!-- Right Panel: Output & Actions -->
+      <section class="card panel-output" aria-labelledby="output-heading">
+        <div class="card-header">
+          <div class="output-header-left">
+            <h2 id="output-heading">Generated Cover Letter</h2>
+            <div id="outputBadge" class="output-badge hidden">
+              <span class="badge-dot"></span>
+              <span id="outputBadgeText">Gemini AI</span>
+            </div>
+          </div>
+          <div class="output-actions">
+            <button type="button" id="copyBtn" class="btn-secondary" disabled title="Copy to clipboard">
+              <svg class="copy-icon" width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <rect x="9" y="9" width="13" height="13" rx="2" ry="2"/>
+                <path d="M5 15H4a2 2 0 0 1-2-2V4a2 2 0 0 1 2-2h9a2 2 0 0 1 2 2v1"/>
+              </svg>
+              <span id="copyBtnText">Copy</span>
+            </button>
+            <button type="button" id="downloadBtn" class="btn-secondary" disabled title="Download as text file">
+              <svg width="16" height="16" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="2">
+                <path d="M21 15v4a2 2 0 0 1-2 2H5a2 2 0 0 1-2-2v-4"/>
+                <polyline points="7 10 12 15 17 10"/>
+                <line x1="12" y1="15" x2="12" y2="3"/>
+              </svg>
+              <span>Download</span>
+            </button>
+          </div>
+        </div>
+
+        <!-- Output Container -->
+        <div class="output-wrapper">
+          <!-- Empty State -->
+          <div id="emptyState" class="empty-state">
+            <div class="empty-state-icon">
+              <svg width="48" height="48" viewBox="0 0 24 24" fill="none" stroke="currentColor" stroke-width="1.5">
+                <path d="M14 2H6a2 2 0 0 0-2 2v16a2 2 0 0 0 2 2h12a2 2 0 0 0 2-2V8z"/>
+                <polyline points="14 2 14 8 20 8"/>
+                <line x1="16" y1="13" x2="8" y2="13"/>
+                <line x1="16" y1="17" x2="8" y2="17"/>
+                <line x1="10" y1="9" x2="8" y2="9"/>
+              </svg>
+            </div>
+            <h3>No Cover Letter Generated Yet</h3>
+            <p>Fill out the candidate details on the left and click <strong>Generate Cover Letter</strong> to craft your custom document.</p>
+            <div class="empty-state-hints">
+              <span class="hint-tag">⚡ Works without API key (Template Fallback)</span>
+              <span class="hint-tag">✨ Full Gemini AI support</span>
+            </div>
+          </div>
+
+          <!-- Loading State Overlay -->
+          <div id="loadingOverlay" class="loading-overlay hidden" aria-live="polite">
+            <div class="spinner-pulse"></div>
+            <p class="loading-title">Drafting Your Cover Letter...</p>
+            <p class="loading-subtitle" id="loadingSubtitle">Consulting AI engine & tailoring paragraphs...</p>
+          </div>
+
+          <!-- Formatted Letter Textarea/Display -->
+          <div id="resultContainer" class="result-container hidden">
+            <textarea 
+              id="coverLetterOutput" 
+              class="letter-textarea" 
+              spellcheck="false" 
+              aria-label="Generated cover letter content"
+            ></textarea>
+            
+            <div class="output-footer">
+              <div class="letter-stats">
+                <span id="wordCount">0 words</span>
+                <span class="stat-separator">•</span>
+                <span id="charCount">0 characters</span>
+              </div>
+              <span class="edit-hint">Click inside text to make custom edits</span>
+            </div>
+          </div>
+        </div>
+      </section>
+    </main>
+
+    <!-- Footer -->
+    <footer class="app-footer">
+      <p>Sprint 4 – AI Cover Letter Generator • Node.js, Express & Google Gemini API</p>
+    </footer>
+  </div>
+
+  <!-- Toast Notification -->
+  <div id="toast" class="toast hidden" role="status" aria-live="polite"></div>
+
+  <script src="script.js"></script>
+</body>
+</html>

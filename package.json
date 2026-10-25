@@ -1,0 +1,25 @@
+{
+  "name": "sprint-4-ai-cover-letter-generator",
+  "version": "1.0.0",
+  "description": "AI-powered and Template-fallback Cover Letter Generator built with HTML, CSS, Vanilla JS, Node.js, Express, and Google Gemini API.",
+  "main": "backend/server.js",
+  "scripts": {
+    "start": "node backend/server.js",
+    "dev": "node --watch backend/server.js",
+    "test": "node test-endpoints.js"
+  },
+  "keywords": [
+    "cover-letter",
+    "gemini-api",
+    "express",
+    "saas"
+  ],
+  "author": "",
+  "license": "ISC",
+  "dependencies": {
+    "@google/generative-ai": "^0.24.1",
+    "cors": "^2.8.5",
+    "dotenv": "^16.4.7",
+    "express": "^4.21.2"
+  }
+}
