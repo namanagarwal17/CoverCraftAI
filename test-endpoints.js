@@ -41,8 +41,8 @@ async function runTests() {
   });
   console.log('Status:', res1.statusCode, 'Response:', res1.data);
 
-  console.log('\n--- TEST 2: Template generation without API key (Phase 1) ---');
-  const res2 = await postJson('/api/generate-cover-letter', {
+  console.log('\n--- TEST 2: Generation via /api/generate ---');
+  const res2 = await postJson('/api/generate', {
     candidateName: 'Alex Morgan',
     jobRole: 'Lead Software Architect',
     targetCompany: 'Acme Cloud Solutions',
@@ -52,7 +52,7 @@ async function runTests() {
   console.log('Status:', res2.statusCode);
   console.log('Source:', res2.data.source);
   console.log('Message:', res2.data.message);
-  console.log('Sample Cover Letter Output:\n', res2.data.coverLetter);
+  console.log('Sample Cover Letter Output Preview:\n', (res2.data.coverLetter || '').slice(0, 150) + '...');
 
   console.log('\n--- TEST 3: Static Frontend file serving ---');
   const httpGet = (url) =>

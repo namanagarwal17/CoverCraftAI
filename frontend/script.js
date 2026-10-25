@@ -4,10 +4,9 @@
  * Clipboard Handling, Word/Character counting, and UI State Management.
  */
 
-// Determine API Base URL (works if served via Express port 5000 or standalone frontend)
-const API_BASE_URL = (window.location.protocol.startsWith('http') && window.location.port === '5000')
-  ? ''
-  : 'http://localhost:5000';
+// Relative API Endpoints (works seamlessly both locally and in production on Render)
+const API_STATUS_ENDPOINT = '/api/status';
+const API_GENERATE_ENDPOINT = '/api/generate';
 
 // DOM Elements
 const form = document.getElementById('coverLetterForm');
@@ -75,7 +74,7 @@ async function checkBackendStatus() {
     const controller = new AbortController();
     const timeoutId = setTimeout(() => controller.abort(), 4000);
 
-    const res = await fetch(`${API_BASE_URL}/api/status`, {
+    const res = await fetch(API_STATUS_ENDPOINT, {
       signal: controller.signal
     });
     clearTimeout(timeoutId);
@@ -286,7 +285,7 @@ form.addEventListener('submit', async (e) => {
     // If template mode is explicitly selected, skip backend API call or call backend template
     if (forceTemplate) {
       try {
-        const res = await fetch(`${API_BASE_URL}/api/generate-cover-letter`, {
+        const res = await fetch(API_GENERATE_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -306,7 +305,7 @@ form.addEventListener('submit', async (e) => {
     } else {
       // Auto Mode: Attempt Backend Gemini Generation with automatic Fallback
       try {
-        const res = await fetch(`${API_BASE_URL}/api/generate-cover-letter`, {
+        const res = await fetch(API_GENERATE_ENDPOINT, {
           method: 'POST',
           headers: { 'Content-Type': 'application/json' },
           body: JSON.stringify(payload)
@@ -337,12 +336,12 @@ form.addEventListener('submit', async (e) => {
           };
         }
       } catch (networkErr) {
-        // Backend completely unreachable (e.g., node server not running)
+        // Backend completely unreachable (e.g., service offline)
         console.warn('Backend fetch failed, using client-side template generator:', networkErr);
         coverLetterText = generateClientTemplate(payload);
         sourceMode = 'template-fallback';
         alertNotice = {
-          msg: 'Backend server not reachable at http://localhost:5000. Generated immediately via client-side template engine!',
+          msg: 'Backend service unreachable. Generated immediately via client-side template engine!',
           type: 'info'
         };
       }

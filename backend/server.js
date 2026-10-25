@@ -158,13 +158,13 @@ app.get('/api/status', (req, res) => {
 });
 
 /**
- * Cover Letter Generation Endpoint
+ * Cover Letter Generation Handler
  * Handles:
  * - Direct template generation (Phase 1)
  * - Gemini API generation with retries (Phase 2)
  * - Automatic graceful fallback to template if Gemini API fails or key is missing
  */
-app.post('/api/generate-cover-letter', async (req, res) => {
+async function handleGenerateCoverLetter(req, res) {
   try {
     const { candidateName, jobRole, targetCompany, keySkills, tone, forceTemplate } = req.body;
 
@@ -300,7 +300,11 @@ Formatting & Content Requirements:
       error: 'An unexpected internal error occurred. Please try again.'
     });
   }
-});
+}
+
+// Support both /api/generate and /api/generate-cover-letter
+app.post('/api/generate', handleGenerateCoverLetter);
+app.post('/api/generate-cover-letter', handleGenerateCoverLetter);
 
 // Fallback to index.html for root or unmatched routes
 app.get('*', (req, res) => {
